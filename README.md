@@ -57,10 +57,10 @@ int main()
 		v1 = sqrtApprox(v1)+13.0f;
 	}
 
+	// Prints a summary comparing the results.
     PROFILE_SUMMARY();
 
-
-    return (v0+v1+v2);
+    return (v0+v1+v2); // avoid lazy optimations
 }
 ```
 

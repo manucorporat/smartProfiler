@@ -53,7 +53,6 @@ typedef struct _profile_buf {
 #else
 	struct timeval timestamp;
 #endif
-    
 } profile_buf;
 
 
@@ -126,11 +125,11 @@ int __profileCompare(const void *p1, const void *p2)
     return (int)(b1->time - b2->time);
 }
 
+
 void PROFILE_SUMMARY()
 {
     if(__profileCurrent > 1) {
         
-        int i;
         // GET REFERENCE
         profile_buf reference = __profileHistory[0];
         double base = reference.time/reference.total;
@@ -140,13 +139,13 @@ void PROFILE_SUMMARY()
         
         // SHOW RESULTS
         printf("\nPROFILER SUMMARY:");
-        for(i = 0; i < __profileCurrent; ++i)
+        for(int i = 0; i < __profileCurrent; ++i)
         {
             profile_buf *buf = &__profileHistory[i];
             double time = buf->time/buf->total;
             double factor = base/time;
             
-            printf("\n    - %d: \"%s\" ", (i+1), buf->title);
+            printf("\n	- %d: \"%s\" ", (i+1), buf->title);
             if(factor == 1.0f)
                 printf("is the reference.");
             else if(factor >= 1)
