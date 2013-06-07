@@ -83,8 +83,8 @@ void __profilePrint(profile_buf *state)
     printf(
            "%s:\n"
            "	- Iterations: %lld\n"
-           "	- Total time: %.2f ms (%.10fs)\n"
-           "	- Iteration time: %.10f ms (%.10fs)\n\n",
+           "	- Total time: %.3f ms (%.10fs)\n"
+           "	- Iteration time: %.8f ms (%.10fs)\n\n",
            state->title,
            state->total,
            state->time, (state->time/1000.0),
