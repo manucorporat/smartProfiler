@@ -134,10 +134,10 @@ void PROFILE_SUMMARY()
 }
 
 
-#define PROFILE_N(__TEXT__, __TOTAL__) \
-for(profile_buf buff = __initProfile(__TEXT__, __TOTAL__); __profile(&buff); ++buff.index)
+#define PROFILE_N(__TITLE__, __TOTAL__) \
+for(profile_buf buff = __initProfile(__TITLE__, __TOTAL__); __profile(&buff); ++buff.index)
 
-#define PROFILE(__TEXT__) PROFILE_N(__TEXT__, 100000000)
+#define PROFILE(__TITLE__) PROFILE_N(__TITLE__, 100000000)
 
 
 #endif
