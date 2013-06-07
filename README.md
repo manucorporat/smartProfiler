@@ -21,7 +21,6 @@ and
 
 ```c
 PROFILE_SUMMARY(); // to print a summary comparing the results.
-}
 ```
 
 That's all!!
@@ -52,8 +51,7 @@ int main()
     
 	PROFILE("sqrtIterative()") {
 		v0 = sqrtIterative(v0)+13.0f;
-	}
-    
+	}  
     
     PROFILE("sqrtApprox()") {
 		v1 = sqrtApprox(v1)+13.0f;
