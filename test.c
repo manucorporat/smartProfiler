@@ -5,10 +5,11 @@
 
 
 // Babylonian method: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
-static float sqrtNewton(float n) {
+
+static float sqrtIterative(float n) {
     
-	float x = n;
-    float x1, diff;
+	register float x = n;
+    register float x1, diff;
     do {
         x1 = (x + n/x)/2;
         diff = x-x1;
@@ -20,17 +21,38 @@ static float sqrtNewton(float n) {
 }
 
 
+static float sqrtApprox(float z)
+{
+    int val_int = *(int*)&z; /* Same bits, but as an int */
+    
+    val_int -= 1 << 23; /* Subtract 2^m. */
+    val_int >>= 1; /* Divide by 2. */
+    val_int += 1 << 29; /* Add ((b + 1) / 2) * 2^m. */
+    
+    return *(float*)&val_int; /* Interpret again as float */
+}
+
+
 int main()
 {
-	float v0 = 1000;
-	PROFILE("ALGORITHM 1, Newton's method") {
-		v0 = sqrtNewton(v0)+13.0f;
+	float v0 = 10000;
+    float v1 = 10000;
+	float v2 = 10000;
+
+    PROFILE("sqrt()") {
+		v2 = sqrt(v2)+13.0f;
 	}
     
-	float v1 = 1000;
-	PROFILE("ALGORITHM 2, Native sqrt() function") {
-		v1 = sqrt(v1)+13.0f;
+	PROFILE("sqrtIterative()") {
+		v0 = sqrtIterative(v0)+13.0f;
 	}
     
-    return (v0+v1); // prevent lazy optimizations
+    PROFILE("sqrtApprox()") {
+		v1 = sqrtApprox(v1)+13.0f;
+	}
+
+    PROFILE_RESUME();
+
+
+    return (v0+v1+v2);
 }

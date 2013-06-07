@@ -29,15 +29,23 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include <math.h>
+
+
 
 typedef struct _profile_buf {
 	const char *title;
 	unsigned long long total;
 	unsigned long long index;
+    unsigned long long time;
 	struct timeval timestamp;
 } profile_buf;
+
+
+profile_buf __profileHistory[20];
+unsigned int __profileCurrent = 0;
 
 
 inline profile_buf __initProfile(const char *title, unsigned long long total)
@@ -51,6 +59,22 @@ inline profile_buf __initProfile(const char *title, unsigned long long total)
 }
 
 
+void __profilePrint(profile_buf *state)
+{
+    double iterationTime = (double)state->time/(double)state->total;
+    
+    printf(
+           "%s:\n"
+           "	- Iterations: %llu\n"
+           "	- Total time: %llu μs  (%f s)\n"
+           "	- Iteration time: %f μs  (%f s)\n\n",
+           state->title,
+           state->total,
+           state->time, (state->time/1000000.0),
+           iterationTime, (iterationTime/1000000.0));
+}
+
+
 inline bool __profile(profile_buf *state)
 {
 	if(state->index != state->total)
@@ -60,23 +84,55 @@ inline bool __profile(profile_buf *state)
 	{
 		struct timeval now;
 		gettimeofday(&now, NULL);
-		
-		unsigned long long totalTime = (now.tv_sec - state->timestamp.tv_sec)*1000000 + (now.tv_usec - state->timestamp.tv_usec);
-		double iterationTime = (double)totalTime/(double)state->total;
-		
-		printf(
-		"%s:\n"
-		"	- Iterations: %llu\n"
-		"	- Total time: %llu μs  (%f s)\n"
-		"	- Iteration time: %f μs  (%f s)\n\n",
-		state->title,
-		state->total,
-		totalTime, (totalTime/1000000.0),
-		iterationTime, (iterationTime/1000000.0));
-		
+        state->time = (now.tv_sec - state->timestamp.tv_sec)*1000000 + (now.tv_usec - state->timestamp.tv_usec);
+
+        __profileHistory[__profileCurrent] = *state;
+        __profileCurrent++;
+        __profilePrint(state);
 		return false;
 	}
 }
+
+
+int __profileCompare(const void *p1, const void *p2) {
+    profile_buf *b1 = (profile_buf*)p1;
+    profile_buf *b2 = (profile_buf*)p2;
+    return b1->time - b2->time;
+}
+
+void PROFILE_RESUME()
+{
+    if(__profileCurrent > 1) {
+        
+        // GET REFERENCE
+        profile_buf reference = __profileHistory[0];
+        double base = (double)reference.time/(double)reference.total;
+        
+        // SORT
+        qsort(&__profileHistory, __profileCurrent, sizeof(profile_buf), __profileCompare);
+        
+        // SHOW RESULTS
+        int i = 0;
+        printf("\nPROFILER RESUME:");
+        for(; i < __profileCurrent; ++i) {
+            profile_buf *buf = &__profileHistory[i];
+            double time = (double)buf->time/(double)buf->total;
+            double relation = base / time;
+            
+            printf("\n    - %d: \"%s\" ", (i+1), buf->title);
+            if(relation == 1.0f)
+                printf("is the reference.");
+            else if(relation >= 1)
+                printf("is %.3f times faster than \"%s\"", relation, reference.title);
+            else
+                printf("is %.3f times slower than \"%s\"", (1.0f/relation), reference.title);
+        }
+        printf("\n\n");
+        
+    }
+    __profileCurrent = 0;
+}
+
 
 #define PROFILE_N(__TEXT__, __TOTAL__) \
 for(profile_buf buff = __initProfile(__TEXT__, __TOTAL__); __profile(&buff); ++buff.index)
