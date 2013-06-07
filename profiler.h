@@ -1,5 +1,5 @@
 /*
- * Simple profiler
+ * Smart profiler
  *
  * Copyright (c) 2011-2013 FORZEFIELD Studios S.L.
  * Copyright (c) 2013 Manuel Martínez-Almeida
@@ -24,8 +24,8 @@
  */
 
 
-#ifndef __SIMPLE_PROFILER__
-#define __SIMPLE_PROFILER__
+#ifndef __SMART_PROFILER__
+#define __SMART_PROFILER__
 
 #include <stdio.h>
 #include <stdbool.h>
