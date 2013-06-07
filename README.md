@@ -46,7 +46,7 @@ int main()
 	}
 
 	PROFILE("ALGORITHM 2, Native sqrt() function") {
-		v1 = sqrt(v1)+25.0f;
+		v1 = sqrt(v1)+13.0f;
 	}
 
     return (v0+v1); // prevent lazy optimizations
