@@ -3,6 +3,7 @@ SMART PROFILER
 **It's a smart and easy way to profile code in C. Looks like a native C feature.**
 
 ##How to use it?
+
 ```c
 PROFILE("MESSAGE") {
 	// CODE TO PROFILE
@@ -16,53 +17,78 @@ PROFILE_N("MESSAGE", iterations) {
 }
 ```
 
+and
+
+```c
+PROFILE_SUMMARY(); // to print a summary comparing the results.
+}
+```
+
 That's all!!
 
 
 ##Example code
 
 ```c
-static float sqrtNewton(float n)
+static float sqrtApprox(float n)
 {    
-	float x = n;
-	float x1;
-	float diff;
-    do {
-		x1 = (x + n/x)/2;
-		diff = x-x1;
-		x = x1;
-    }while(diff!=0.0f);
-	return x;
+	// IMPLEMENTATION
+}
+
+static float sqrtIterative(float n)
+{    
+	// IMPLEMENTATION
 }
 
 int main()
 {
-	float v0 = 1000;
-	float v1 = 1000;
+	float v0 = 10000;
+    float v1 = 10000;
+	float v2 = 10000;
 
-
-	PROFILE("ALGORITHM 1, Newton's method") {
-		v0 = sqrtNewton(v0)+13.0f;
+    PROFILE("sqrt()") {
+		v2 = sqrt(v2)+13.0f;
+	}
+    
+	PROFILE("sqrtIterative()") {
+		v0 = sqrtIterative(v0)+13.0f;
+	}
+    
+    
+    PROFILE("sqrtApprox()") {
+		v1 = sqrtApprox(v1)+13.0f;
 	}
 
-	PROFILE("ALGORITHM 2, Native sqrt() function") {
-		v1 = sqrt(v1)+13.0f;
-	}
+    PROFILE_SUMMARY();
 
-    return (v0+v1); // prevent lazy optimizations
+
+    return (v0+v1+v2);
 }
 ```
+
 
 OUTPUT:
 
 ```
-ALGORITHM 1, Newton's method:
-	Iterations: 100000000
-	Total time: 4882027 μs  (4.882027 s)
-	Iteration time: 0.048820 μs  (0.000000 s)
-	
-ALGORITHM 2, Native sqrt() function:
+sqrt():
 	- Iterations: 100000000
-	- Total time: 922398 μs  (0.922398 s)
-	- Iteration time: 0.009224 μs  (0.000000 s)
+	- Total time: 2423984 μs  (2.423984 s)
+	- Iteration time: 0.024240 μs  (0.000000 s)
+
+sqrtIterative():
+	- Iterations: 100000000
+	- Total time: 12785562 μs  (12.785562 s)
+	- Iteration time: 0.127856 μs  (0.000000 s)
+
+sqrtApprox():
+	- Iterations: 100000000
+	- Total time: 668946 μs  (0.668946 s)
+	- Iteration time: 0.006689 μs  (0.000000 s)
+
+
+PROFILER SUMMARY:
+    - 1: "sqrtApprox()" is 3.624 times faster than "sqrt()"
+    - 2: "sqrt()" is the reference.
+    - 3: "sqrtIterative()" is 5.275 times slower than "sqrt()"
+
 ```

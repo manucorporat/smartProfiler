@@ -100,7 +100,7 @@ int __profileCompare(const void *p1, const void *p2) {
     return b1->time - b2->time;
 }
 
-void PROFILE_RESUME()
+void PROFILE_SUMMARY()
 {
     if(__profileCurrent > 1) {
         
@@ -113,7 +113,7 @@ void PROFILE_RESUME()
         
         // SHOW RESULTS
         int i = 0;
-        printf("\nPROFILER RESUME:");
+        printf("\nPROFILER SUMMARY:");
         for(; i < __profileCurrent; ++i) {
             profile_buf *buf = &__profileHistory[i];
             double time = (double)buf->time/(double)buf->total;

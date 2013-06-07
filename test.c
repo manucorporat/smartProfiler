@@ -51,7 +51,7 @@ int main()
 		v1 = sqrtApprox(v1)+13.0f;
 	}
 
-    PROFILE_RESUME();
+    PROFILE_SUMMARY();
 
 
     return (v0+v1+v2);
