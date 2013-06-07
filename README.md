@@ -1,29 +1,42 @@
 SMART PROFILER
 ====
-**It's a smart and easy way to profile code in C. Looks like a native C feature.**
+**It's a smart and easy way to profile code in C. Looks like a native C feature.** Compatible with Windows and Unix-like systems.
 
 ##How to use it?
 
-```c
-PROFILE("MESSAGE") {
-	// CODE TO PROFILE
-}
-```
-or
+I suggest a short message, for example the name of the function to measure (MESSAGE="sqrt()").
 
 ```c
-PROFILE_N("MESSAGE", iterations) {
+PROFILE( MESSAGE ) {
 	// CODE TO PROFILE
 }
 ```
 
-and
+You can specify the number of iterations as well. This time you would have to use PROFILE_N().
 
 ```c
-PROFILE_SUMMARY(); // to print a summary comparing the results.
+PROFILE_N( MESSAGE, iterations) {
+	// CODE TO PROFILE
+}
+```
+
+Finally, you can print a summary comparing the results sorted in a proper way.
+
+```c
+void PROFILE_SUMMARY();
 ```
 
 That's all!!
+
+
+One more thing, the first call to PROFILE() will be the reference in the summary, ie, if we want to compare two squared root algoritms with the built-in function ```sqrt()```, we should place it first.
+
+``` 
+PROFILE("sqrt()")		{ sqrt(n) } //reference
+PROFILE("mysqrt()")		{ mysqrt(n) }
+PROFILE("mysqrt2()")	{ mysqrt2(n) }
+```
+
 
 
 ##Example code
@@ -69,24 +82,23 @@ OUTPUT:
 
 ```
 sqrt():
-	- Iterations: 100000000
-	- Total time: 2423984 μs  (2.423984 s)
-	- Iteration time: 0.024240 μs  (0.000000 s)
+	- Iterations: 10000000
+	- Total time: 94.392 ms (0.094392s)
+	- Iteration time: 0.00000944 ms (0.000000s)
 
 sqrtIterative():
-	- Iterations: 100000000
-	- Total time: 12785562 μs  (12.785562 s)
-	- Iteration time: 0.127856 μs  (0.000000 s)
+	- Iterations: 10000000
+	- Total time: 489.844 ms (0.489844s)
+	- Iteration time: 0.00004898 ms (0.000000s)
 
 sqrtApprox():
-	- Iterations: 100000000
-	- Total time: 668946 μs  (0.668946 s)
-	- Iteration time: 0.006689 μs  (0.000000 s)
+	- Iterations: 10000000
+	- Total time: 24.706 ms (0.024706s)
+	- Iteration time: 0.00000247 ms (0.000000s)
 
 
 PROFILER SUMMARY:
-    - 1: "sqrtApprox()" is 3.624 times faster than "sqrt()"
-    - 2: "sqrt()" is the reference.
-    - 3: "sqrtIterative()" is 5.275 times slower than "sqrt()"
-
+	- 1: "sqrtApprox()" is 3.821 times faster than "sqrt()".
+	- 2: "sqrt()" is the reference.
+	- 3: "sqrtIterative()" is 5.189 times slower than "sqrt()".
 ```

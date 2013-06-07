@@ -82,8 +82,8 @@ void __profilePrint(profile_buf *state)
     printf(
            "%s:\n"
            "	- Iterations: %lld\n"
-           "	- Total time: %.3f ms (%.10fs)\n"
-           "	- Iteration time: %.8f ms (%.10fs)\n\n",
+           "	- Total time: %.3f ms (%.6fs)\n"
+           "	- Iteration time: %.8f ms (%.6fs)\n\n",
            state->title,
            state->total,
            state->time, (state->time/1000.0),
@@ -149,9 +149,9 @@ void PROFILE_SUMMARY()
             if(factor == 1.0f)
                 printf("is the reference.");
             else if(factor >= 1)
-                printf("is %.3f times faster than \"%s\"", factor, reference.title);
+                printf("is %.3f times faster than \"%s\".", factor, reference.title);
             else
-                printf("is %.3f times slower than \"%s\"", (1.0f/factor), reference.title);
+                printf("is %.3f times slower than \"%s\".", (1.0f/factor), reference.title);
         }
         printf("\n\n");
     }
