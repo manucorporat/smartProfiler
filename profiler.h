@@ -83,8 +83,8 @@ void __profilePrint(profile_buf *state)
     printf(
            "%s:\n"
            "	- Iterations: %lld\n"
-           "	- Total time: %.1f ms  (%f s)\n"
-           "	- Iteration time: %f ms  (%f s)\n\n",
+           "	- Total time: %.2f ms (%.10fs)\n"
+           "	- Iteration time: %.10f ms (%.10fs)\n\n",
            state->title,
            state->total,
            state->time, (state->time/1000.0),
@@ -163,7 +163,7 @@ void PROFILE_SUMMARY()
 #define PROFILE_N(__TITLE__, __TOTAL__) \
 for(profile_buf buff = __initProfile(__TITLE__, __TOTAL__); __profile(&buff); ++buff.index)
 
-#define PROFILE(__TITLE__) PROFILE_N(__TITLE__, 100000000)
+#define PROFILE(__TITLE__) PROFILE_N(__TITLE__, 10000000)
 
 
 #endif
