@@ -145,7 +145,7 @@ void PROFILE_SUMMARY()
             double time = buf->time/buf->total;
             double factor = base/time;
             
-            printf("\n	- %d: \"%s\" ", (i+1), buf->title);
+            printf("\n	- %d: [%3.0f%%] \"%s\" ", (i+1), (factor*100), buf->title);
             if(factor == 1.0f)
                 printf("is the reference.");
             else if(factor >= 1)
