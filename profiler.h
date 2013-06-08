@@ -172,15 +172,33 @@ void __profileSummary()
 }
 
 
+#ifdef PROFILE_N
+#warning PROFILE_N is already defined.
+#else
+
 #define PROFILE_N(__TITLE__, __TOTAL__) \
 	for(struct __profile_buf buff = __profileInit(__TITLE__, __TOTAL__); \
 	__profile(&buff); \
 	++buff.index) 
 
+#endif
+
+
+
+#ifdef PROFILE
+#warning PROFILE_N is already defined.
+#else
 
 #define PROFILE(__TITLE__) PROFILE_N(__TITLE__, 10000000)
+#endif
 
+
+
+#ifdef PROFILE_SUMMARY
+#warning PROFILE_SUMMARY is already defined.
+#else
 
 #define PROFILE_SUMMARY() __profileSummary()
+#endif
 
 #endif
