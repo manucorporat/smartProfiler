@@ -56,12 +56,12 @@ struct __profile_buf {
 };
 
 
-struct __profile_buf* __profileHistory = NULL;
-int __profileCapacity = 0;
-int __profileCurrent = 0;
+static struct __profile_buf* __profileHistory = NULL;
+static int __profileCapacity = 0;
+static int __profileCurrent = 0;
 
 
-struct __profile_buf __profileInit(const char *title, long long total)
+static struct __profile_buf __profileInit(const char *title, long long total)
 {
 	if(__profileCurrent >= __profileCapacity) {
 		if(__profileCapacity == 0)
@@ -86,7 +86,7 @@ struct __profile_buf __profileInit(const char *title, long long total)
 }
 
 
-void __profilePrint(const struct __profile_buf *state)
+static void __profilePrint(const struct __profile_buf *state)
 {
 	double iterationTime = state->time/state->total;
 	
@@ -102,7 +102,7 @@ void __profilePrint(const struct __profile_buf *state)
 }
 
 
-inline char __profile(struct __profile_buf *state)
+static inline char __profile(struct __profile_buf *state)
 {
 	if(state->index != state->total)
 		return 1;
@@ -129,7 +129,7 @@ inline char __profile(struct __profile_buf *state)
 }
 
 
-int __profileCompare(const void *p1, const void *p2) {
+static int __profileCompare(const void *p1, const void *p2) {
 	struct __profile_buf *b1 = (struct __profile_buf*)p1;
 	struct __profile_buf *b2 = (struct __profile_buf*)p2;
 	if(b1->time > b2->time)
@@ -139,7 +139,7 @@ int __profileCompare(const void *p1, const void *p2) {
 }
 
 
-void __profileSummary()
+static void __profileSummary()
 {
 	if(__profileCurrent > 1) {
 		
@@ -159,9 +159,9 @@ void __profileSummary()
 			double factor = base/time;
 			
 			printf("\n	- %d: [%3.0f%%] \"%s\" ", (i+1), (factor*100), buf->title);
-			if(factor == 1.0f)
+			if(factor == 1.0)
 				printf("is the reference.");
-			else if(factor >= 1)
+			else if(factor > 1.0)
 				printf("is %.3f times faster.", factor);
 			else
 				printf("is %.3f times slower.", (1/factor));
