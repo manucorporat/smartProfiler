@@ -43,7 +43,7 @@
 
 
 
-typedef struct _profile_buf {
+struct __profile_buf {
 	const char *title;
 	long long total;
 	long long index;
@@ -53,16 +53,27 @@ typedef struct _profile_buf {
 #else
 	struct timeval timestamp;
 #endif
-} profile_buf;
+};
 
 
-profile_buf __profileHistory[20];
+struct __profile_buf* __profileHistory = NULL;
+int __profileCapacity = 0;
 int __profileCurrent = 0;
 
 
-inline profile_buf __initProfile(const char *title, long long total)
+struct __profile_buf __profileInit(const char *title, long long total)
 {
-	profile_buf state;
+	if(__profileCurrent >= __profileCapacity) {
+		if(__profileCapacity == 0)
+			__profileCapacity = __profileCurrent+10;
+		else
+			__profileCapacity *= 2;
+		
+		// realloc calls malloc() internally if the original buffer is NULL.
+		__profileHistory = (struct __profile_buf*)realloc(__profileHistory, sizeof(struct __profile_buf)*__profileCapacity);
+	}
+	
+	struct __profile_buf state;
 	state.title = title;
 	state.total = total;
 	state.index = 0;
@@ -75,7 +86,7 @@ inline profile_buf __initProfile(const char *title, long long total)
 }
 
 
-void __profilePrint(profile_buf *state)
+void __profilePrint(const struct __profile_buf *state)
 {
 	double iterationTime = state->time/state->total;
 	
@@ -91,7 +102,7 @@ void __profilePrint(profile_buf *state)
 }
 
 
-inline char __profile(profile_buf *state)
+inline char __profile(struct __profile_buf *state)
 {
 	if(state->index != state->total)
 		return 1;
@@ -109,7 +120,7 @@ inline char __profile(profile_buf *state)
 		gettimeofday(&now, NULL);
 		state->time = (now.tv_sec - state->timestamp.tv_sec)*1000.0 + (now.tv_usec - state->timestamp.tv_usec)/1000.0;
 #endif
-
+		
 		__profileHistory[__profileCurrent] = *state;
 		__profileCurrent++;
 		__profilePrint(state);
@@ -118,10 +129,9 @@ inline char __profile(profile_buf *state)
 }
 
 
-int __profileCompare(const void *p1, const void *p2)
-{
-	profile_buf *b1 = (profile_buf*)p1;
-	profile_buf *b2 = (profile_buf*)p2;
+int __profileCompare(const void *p1, const void *p2) {
+	struct __profile_buf *b1 = (struct __profile_buf*)p1;
+	struct __profile_buf *b2 = (struct __profile_buf*)p2;
 	if(b1->time > b2->time)
 		return 1;
 	else
@@ -129,22 +139,22 @@ int __profileCompare(const void *p1, const void *p2)
 }
 
 
-void PROFILE_SUMMARY()
+void __profileSummary()
 {
 	if(__profileCurrent > 1) {
 		
 		// GET REFERENCE
-		profile_buf reference = __profileHistory[0];
+		struct __profile_buf reference = __profileHistory[0];
 		double base = reference.time/reference.total;
 		
 		// SORT
-		qsort(&__profileHistory, __profileCurrent, sizeof(profile_buf), __profileCompare);
+		qsort(__profileHistory, __profileCurrent, sizeof(struct __profile_buf), __profileCompare);
 		
 		// SHOW RESULTS
 		printf("\nPROFILER SUMMARY:");
 		for(int i = 0; i < __profileCurrent; ++i)
 		{
-			profile_buf *buf = &__profileHistory[i];
+			struct __profile_buf *buf = &__profileHistory[i];
 			double time = buf->time/buf->total;
 			double factor = base/time;
 			
@@ -152,9 +162,9 @@ void PROFILE_SUMMARY()
 			if(factor == 1.0f)
 				printf("is the reference.");
 			else if(factor >= 1)
-				printf("is %.3f times faster than \"%s\".", factor, reference.title);
+				printf("is %.3f times faster.", factor);
 			else
-				printf("is %.3f times slower than \"%s\".", (1.0f/factor), reference.title);
+				printf("is %.3f times slower.", (1/factor));
 		}
 		printf("\n\n");
 	}
@@ -163,9 +173,14 @@ void PROFILE_SUMMARY()
 
 
 #define PROFILE_N(__TITLE__, __TOTAL__) \
-for(profile_buf buff = __initProfile(__TITLE__, __TOTAL__); __profile(&buff); ++buff.index)
+	for(struct __profile_buf buff = __profileInit(__TITLE__, __TOTAL__); \
+	__profile(&buff); \
+	++buff.index) 
+
 
 #define PROFILE(__TITLE__) PROFILE_N(__TITLE__, 10000000)
 
+
+#define PROFILE_SUMMARY() __profileSummary()
 
 #endif

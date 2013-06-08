@@ -5,6 +5,7 @@
 
 
 // Babylonian method: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
+// x(i+1) = x(i)/2 + (S/x(i))/2
 
 static float sqrtIterative(float n) {
 	
@@ -73,5 +74,5 @@ int main()
 	PROFILE_SUMMARY();
 	
 	
-	return (v0+v1+v2+v3);
+	return (v0+v1+v2+v3); // avoid lazy optimations
 }
