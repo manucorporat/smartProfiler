@@ -33,26 +33,45 @@ static float sqrtApprox(float z)
 }
 
 
+static float sqrtBakhsali(const float m)
+{
+    int i=0;
+    while( (i*i) <= m )
+        i++;
+    i--;
+    float d = m - i*i;
+    float p=d/(2*i);
+    float a=i+p;
+    return a-(p*p)/(2*a);
+}
+
+
 int main()
 {
 	float v0 = 10000;
     float v1 = 10000;
 	float v2 = 10000;
+    float v3 = 10000;
+
 
     PROFILE("sqrt()") {
-		v2 = sqrt(v2)+13.0f;
+		v0 = sqrt(v0)+13.0f;
 	}
     
 	PROFILE("sqrtIterative()") {
-		v0 = sqrtIterative(v0)+13.0f;
+		v1 = sqrtIterative(v1)+13.0f;
+	}
+    
+    PROFILE("sqrtBakhsali()") {
+		v2 = sqrtBakhsali(v2)+13.0f;
 	}
     
     PROFILE("sqrtApprox()") {
-		v1 = sqrtApprox(v1)+13.0f;
+		v3 = sqrtApprox(v3)+13.0f;
 	}
 
     PROFILE_SUMMARY();
 
 
-    return (v0+v1+v2);
+    return (v0+v1+v2+v3);
 }
