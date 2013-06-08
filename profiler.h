@@ -45,11 +45,11 @@
 
 typedef struct _profile_buf {
 	const char *title;
-    long long total;
-    long long index;
-    double time;
+	long long total;
+	long long index;
+	double time;
 #ifdef __PROFILE_IN_WINDOWS
-    LARGE_INTEGER timestamp;
+	LARGE_INTEGER timestamp;
 #else
 	struct timeval timestamp;
 #endif
@@ -67,9 +67,9 @@ inline profile_buf __initProfile(const char *title, long long total)
 	state.total = total;
 	state.index = 0;
 #ifdef __PROFILE_IN_WINDOWS
-    QueryPerformanceCounter(&state.timestamp);
+	QueryPerformanceCounter(&state.timestamp);
 #else
-    gettimeofday(&state.timestamp, NULL);
+	gettimeofday(&state.timestamp, NULL);
 #endif
 	return state;
 }
@@ -77,17 +77,17 @@ inline profile_buf __initProfile(const char *title, long long total)
 
 void __profilePrint(profile_buf *state)
 {
-    double iterationTime = state->time/state->total;
-    
-    printf(
-           "%s:\n"
-           "	- Iterations: %lld\n"
-           "	- Total time: %.3f ms (%.6fs)\n"
-           "	- Iteration time: %.8f ms (%.6fs)\n\n",
-           state->title,
-           state->total,
-           state->time, (state->time/1000.0),
-           iterationTime, (iterationTime/1000.0));
+	double iterationTime = state->time/state->total;
+	
+	printf(
+		   "%s:\n"
+		   "	- Iterations: %lld\n"
+		   "	- Total time: %.3f ms (%.6fs)\n"
+		   "	- Iteration time: %.8f ms (%.6fs)\n\n",
+		   state->title,
+		   state->total,
+		   state->time, (state->time/1000.0),
+		   iterationTime, (iterationTime/1000.0));
 }
 
 
@@ -99,20 +99,20 @@ inline char __profile(profile_buf *state)
 	else
 	{
 #ifdef __PROFILE_IN_WINDOWS
-        LARGE_INTEGER now;
-        LARGE_INTEGER frequency;
-        QueryPerformanceCounter(&now);
-        QueryPerformanceFrequency(&frequency);
-        state->time = (now.QuadPart - state->timestamp.QuadPart)*1000.0 / frequency.QuadPart;
+		LARGE_INTEGER now;
+		LARGE_INTEGER frequency;
+		QueryPerformanceCounter(&now);
+		QueryPerformanceFrequency(&frequency);
+		state->time = (now.QuadPart - state->timestamp.QuadPart)*1000.0 / frequency.QuadPart;
 #else
 		struct timeval now;
 		gettimeofday(&now, NULL);
-        state->time = (now.tv_sec - state->timestamp.tv_sec)*1000.0 + (now.tv_usec - state->timestamp.tv_usec)/1000.0;
+		state->time = (now.tv_sec - state->timestamp.tv_sec)*1000.0 + (now.tv_usec - state->timestamp.tv_usec)/1000.0;
 #endif
 
-        __profileHistory[__profileCurrent] = *state;
-        __profileCurrent++;
-        __profilePrint(state);
+		__profileHistory[__profileCurrent] = *state;
+		__profileCurrent++;
+		__profilePrint(state);
 		return 0;
 	}
 }
@@ -120,42 +120,42 @@ inline char __profile(profile_buf *state)
 
 int __profileCompare(const void *p1, const void *p2)
 {
-    profile_buf *b1 = (profile_buf*)p1;
-    profile_buf *b2 = (profile_buf*)p2;
-    return (int)(b1->time - b2->time);
+	profile_buf *b1 = (profile_buf*)p1;
+	profile_buf *b2 = (profile_buf*)p2;
+	return (int)(b1->time - b2->time);
 }
 
 
 void PROFILE_SUMMARY()
 {
-    if(__profileCurrent > 1) {
-        
-        // GET REFERENCE
-        profile_buf reference = __profileHistory[0];
-        double base = reference.time/reference.total;
-        
-        // SORT
-        qsort(&__profileHistory, __profileCurrent, sizeof(profile_buf), __profileCompare);
-        
-        // SHOW RESULTS
-        printf("\nPROFILER SUMMARY:");
-        for(int i = 0; i < __profileCurrent; ++i)
-        {
-            profile_buf *buf = &__profileHistory[i];
-            double time = buf->time/buf->total;
-            double factor = base/time;
-            
-            printf("\n	- %d: [%3.0f%%] \"%s\" ", (i+1), (factor*100), buf->title);
-            if(factor == 1.0f)
-                printf("is the reference.");
-            else if(factor >= 1)
-                printf("is %.3f times faster than \"%s\".", factor, reference.title);
-            else
-                printf("is %.3f times slower than \"%s\".", (1.0f/factor), reference.title);
-        }
-        printf("\n\n");
-    }
-    __profileCurrent = 0;
+	if(__profileCurrent > 1) {
+		
+		// GET REFERENCE
+		profile_buf reference = __profileHistory[0];
+		double base = reference.time/reference.total;
+		
+		// SORT
+		qsort(&__profileHistory, __profileCurrent, sizeof(profile_buf), __profileCompare);
+		
+		// SHOW RESULTS
+		printf("\nPROFILER SUMMARY:");
+		for(int i = 0; i < __profileCurrent; ++i)
+		{
+			profile_buf *buf = &__profileHistory[i];
+			double time = buf->time/buf->total;
+			double factor = base/time;
+			
+			printf("\n	- %d: [%3.0f%%] \"%s\" ", (i+1), (factor*100), buf->title);
+			if(factor == 1.0f)
+				printf("is the reference.");
+			else if(factor >= 1)
+				printf("is %.3f times faster than \"%s\".", factor, reference.title);
+			else
+				printf("is %.3f times slower than \"%s\".", (1.0f/factor), reference.title);
+		}
+		printf("\n\n");
+	}
+	__profileCurrent = 0;
 }
 
 
