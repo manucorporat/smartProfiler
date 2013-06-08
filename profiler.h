@@ -180,13 +180,12 @@ void __profileSummary()
 	for(struct __profile_buf buff = __profileInit(__TITLE__, __TOTAL__); \
 	__profile(&buff); \
 	++buff.index) 
-
 #endif
 
 
 
 #ifdef PROFILE
-#warning PROFILE_N is already defined.
+#warning PROFILE is already defined.
 #else
 
 #define PROFILE(__TITLE__) PROFILE_N(__TITLE__, 10000000)
