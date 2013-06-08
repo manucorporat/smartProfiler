@@ -122,7 +122,10 @@ int __profileCompare(const void *p1, const void *p2)
 {
 	profile_buf *b1 = (profile_buf*)p1;
 	profile_buf *b2 = (profile_buf*)p2;
-	return (int)(b1->time - b2->time);
+	if(b1->time > b2->time)
+		return 1;
+	else
+		return -1;
 }
 
 
