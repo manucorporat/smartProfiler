@@ -67,7 +67,7 @@ static struct __profile_buf __profileInit(const char *title, long long total)
 		if(__profileCapacity == 0)
 			__profileCapacity = __profileCurrent+10;
 		else
-			__profileCapacity *= 2;
+			__profileCapacity = __profileCurrent*2;
 		
 		// realloc calls malloc() internally if the original buffer is NULL.
 		__profileHistory = (struct __profile_buf*)realloc(__profileHistory, sizeof(struct __profile_buf)*__profileCapacity);
