@@ -44,15 +44,17 @@
 
 
 struct __profile_buf {
-	const char *title;
-	long long total;
 	long long index;
-	double time;
+	long long total;
+	union {
+		double time;
 #ifdef __PROFILE_IN_WINDOWS
-	LARGE_INTEGER timestamp;
+		LARGE_INTEGER timestamp;
 #else
-	struct timeval timestamp;
+		struct timeval timestamp;
 #endif
+	};
+	const char *title;
 };
 
 
