@@ -134,10 +134,8 @@ static inline char __profile(struct __profile_buf *state)
 static int __profileCompare(const void *p1, const void *p2) {
 	struct __profile_buf *b1 = (struct __profile_buf*)p1;
 	struct __profile_buf *b2 = (struct __profile_buf*)p2;
-	if(b1->time > b2->time)
-		return 1;
-	else
-		return -1;
+	
+	return (b1->time > b2->time) ? 1 : -1;
 }
 
 
