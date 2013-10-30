@@ -1,10 +1,10 @@
 SMART PROFILER
 ====
-**It's a smart and easy way to profile code in C. Looks like a native C feature.** Compatible with Windows and Unix-like systems.
+**It's a smart and easy way to profile code in C/C++ and Objective-C. Looks like a native C feature.** Compatible with Windows and Unix-like systems.
 
 ##How to use it?
 
-I suggest a short message, for example the name of the function to measure (MESSAGE="sqrt()").
+I recommend a short message, for example the name of the function to measure (MESSAGE="sqrt()").
 
 ```c
 PROFILE( MESSAGE ) {
@@ -15,7 +15,7 @@ PROFILE( MESSAGE ) {
 You can specify the number of iterations as well. This time you would have to use PROFILE_N().
 
 ```c
-PROFILE_N( MESSAGE, iterations) {
+PROFILE_N(MESSAGE, iterations) {
 	// CODE TO PROFILE
 }
 ```
@@ -38,10 +38,18 @@ PROFILE("mysqrt2()")	{ mysqrt2(n) }
 ```
 
 
+##Install it for Xcode 5.0
+```
+git clone git@github.com:manucorporat/smartProfiler.git
+cd smartProfiler
+sh install_script.sh
+```
 
 ##Example code
 
 ```c
+#include <smartprofiler.h>
+
 static float sqrtApprox(float n)
 {    
 	// IMPLEMENTATION
