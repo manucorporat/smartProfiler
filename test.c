@@ -1,7 +1,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "profiler.h"
+#include <unistd.h>
+#include "smartprofiler.h"
 
 
 // Babylonian method: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
@@ -56,23 +57,25 @@ int main()
 
 
 	PROFILE("sqrt()") {
-		v0 = sqrt(v0)+13.0f;
+		v0 = sqrt(v0);
 	}
 	
 	PROFILE("sqrtIterative()") {
-		v1 = sqrtIterative(v1)+13.0f;
+		v1 = sqrtIterative(v1);
 	}
 	
 	PROFILE("sqrtBakhsali()") {
-		v2 = sqrtBakhsali(v2)+13.0f;
+		v2 = sqrtBakhsali(v2);
 	}
 	
 	PROFILE("sqrtApprox()") {
-		v3 = sqrtApprox(v3)+13.0f;
+		v3 = sqrtApprox(v3);
 	}
 
 	PROFILE_SUMMARY();
 	
+    
+    sleep(1000000);
 	
 	return (v0+v1+v2+v3); // avoid lazy optimations
 }

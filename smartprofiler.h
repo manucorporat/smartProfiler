@@ -193,6 +193,15 @@ static void __profileSummary()
 
 
 
+#ifdef PROFILE_ONCE
+#warning PROFILE_ONCE is already defined.
+#else
+
+#define PROFILE_ONCE(__TITLE__) PROFILE_N(__TITLE__, 1)
+#endif
+
+
+
 #ifdef PROFILE_SUMMARY
 #warning PROFILE_SUMMARY is already defined.
 #else
